@@ -15,7 +15,7 @@ urlsConfig="./urls.cfg"
 echo "Reading $urlsConfig"
 while read -r line
 do
-  echo "  $line"
+  echo "  Processing line: $line"
   IFS='=' read -ra TOKENS <<< "$line"
   KEYSARRAY+=(${TOKENS[0]})
   URLSARRAY+=(${TOKENS[1]})
@@ -25,6 +25,7 @@ echo "***********************"
 echo "Starting health checks with ${#KEYSARRAY[@]} configs:"
 
 mkdir -p logs
+echo "Logs directory created at: $(pwd)/logs"
 
 for (( index=0; index < ${#KEYSARRAY[@]}; index++))
 do
@@ -48,6 +49,7 @@ do
   dateTime=$(date +'%Y-%m-%d %H:%M')
   if [[ $commit == true ]]
   then
+    echo "Writing to log: $dateTime, $result"
     echo "$dateTime, $result" >> "logs/${key}_report.log"
     # By default we keep the last 2000 log entries. This will create the file if it doesn't exist.
     echo "$(tail -2000 logs/${key}_report.log)" > "logs/${key}_report.log"
